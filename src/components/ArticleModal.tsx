@@ -11,11 +11,24 @@ interface ArticleModalProps {
 export const ArticleModal: React.FC<ArticleModalProps> = ({ article, onClose }) => {
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
+  const contentContainerRef = useRef<HTMLDivElement>(null);
   const [copiedCode, setCopiedCode] = React.useState(false);
+  const [readingProgress, setReadingProgress] = React.useState(0);
   const { announce } = useA11yAnnouncer();
+
+  const handleContentScroll = () => {
+    if (contentContainerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = contentContainerRef.current;
+      const total = scrollHeight - clientHeight;
+      if (total > 0) {
+        setReadingProgress(Math.min(100, Math.max(0, (scrollTop / total) * 100)));
+      }
+    }
+  };
 
   useEffect(() => {
     if (article) {
+      setReadingProgress(0);
       previousFocusRef.current = document.activeElement as HTMLElement;
       setTimeout(() => {
         closeBtnRef.current?.focus();
@@ -112,10 +125,29 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({ article, onClose }) 
               <X className="w-5 h-5" aria-hidden="true" />
             </button>
           </div>
+
+          {/* Modal Reading Progress Bar */}
+          <div
+            role="progressbar"
+            aria-label="Progreso de lectura del artículo"
+            aria-valuenow={Math.round(readingProgress)}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            className="absolute bottom-0 left-0 right-0 h-[3px] bg-neutral-200/50 dark:bg-neutral-800/50 pointer-events-none"
+          >
+            <div
+              className="h-full bg-gradient-to-r from-[#C8102E] via-[#E02947] to-[#FF3B56] dark:from-[#FF3B56] dark:via-[#FF6B81] dark:to-[#FFA0B0] shadow-[0_0_8px_rgba(200,16,46,0.6)] dark:shadow-[0_0_10px_rgba(255,59,86,0.8)] transition-[width] duration-75 ease-out motion-reduce:transition-none"
+              style={{ width: `${readingProgress}%` }}
+            />
+          </div>
         </div>
 
         {/* Scrollable Long-form Content */}
-        <div className="p-6 sm:p-10 overflow-y-auto space-y-6">
+        <div
+          ref={contentContainerRef}
+          onScroll={handleContentScroll}
+          className="p-6 sm:p-10 overflow-y-auto space-y-6"
+        >
           
           {/* Metadata */}
           <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs text-neutral-500 dark:text-neutral-400 font-mono">

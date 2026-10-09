@@ -101,7 +101,7 @@ export const Hero: React.FC = () => {
                   alt={`Retrato profesional de ${PROFILE_DATA.name}`}
                   referrerPolicy="no-referrer"
                   onError={() => setImageError(true)}
-                  className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-102"
+                  className="w-full h-full object-cover object-top transition-transform duration-300 hover:scale-102"
                 />
               ) : (
                 /* Accessible CSS Fallback Container */

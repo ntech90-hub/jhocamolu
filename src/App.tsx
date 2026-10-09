@@ -14,6 +14,7 @@ import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 import { AdminPanelModal } from './components/AdminPanelModal';
+import { ReadingProgressBar } from './components/ReadingProgressBar';
 
 export default function App() {
   // Theme state: dark mode handling with persistence & system preference
@@ -78,6 +79,9 @@ export default function App() {
     <A11yAnnouncerProvider>
       <div className="min-h-screen bg-white text-[#111111] dark:bg-[#0A0A0A] dark:text-[#F3F4F6] transition-colors duration-200 flex flex-col font-sans">
         
+        {/* Reading Progress Indicator at top of screen */}
+        <ReadingProgressBar />
+
         {/* Fixed Header */}
         <Header
           isDark={isDark}
